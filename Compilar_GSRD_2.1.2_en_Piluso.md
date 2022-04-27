@@ -51,9 +51,10 @@ Vamos a mover esos archivos para ponerlos en lugares donde no van a ser sobreesc
 ```bash
 mkdir $HOME/bin
 mv $AENET_ROOT/bin/* $HOME/bin
-mkdir $HOME/lib
+mkdir -p $HOME/lib/include_intel
 mv $AENET_ROOT/lib/liblbfgsb.so $HOME/lib/liblbfgsb_intel.so
 mv $AENET_ROOT/src/libaenet.so $HOME/lib/libaenet_intel.so
+mv $AENET_ROOT/src/*.mod $HOME/lib/include_intel
 ```
 
 - Compilación de GSRD
@@ -61,7 +62,10 @@ mv $AENET_ROOT/src/libaenet.so $HOME/lib/libaenet_intel.so
   
   - Editar el archivo `$GSRD_ROOT/Makefile_mpiifort` (con nano, vi o el editor que prefiera)
     1. Debajo de la linea donde se define `SRCD = $(BASE)/src`agregar una linea con lo siguiente: `LIBS_AENET=$(HOME)/lib`
-    2. Modificar la linea donde se define la variable `LIB` para que diga: `LIB = -L$(LIBS_AENET) -laenet_intel -llbfgsb_intel`
+    2. Debajo de la línea recién agregada, agregar otra con los siguiente: `INCS = $(LIBS_AENET)/include_intel`
+    3. Modificar la linea donde se define la variable `LIB` para que diga: `LIB = -L$(LIBS_AENET) -laenet_intel -llbfgsb_intel`
+    4. En la sección `$(f90OBJS):     %.o : %.f90` asegurarse que la linea de compilacion diga: `cd $(OBJD); $(FCC) -I$(INCS) -c $(FFLAGS) $< -o $@` lo importante es chequear que diga **-I$(INCS)**
+
   En este repositorio hay una carpeta que se llama `Makefiles_GSRD-2.1.2`, ahí pongo los makefiles para que queden adaptados a este archivo.
   
   - Compilar GSRD
