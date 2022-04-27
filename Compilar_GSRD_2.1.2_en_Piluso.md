@@ -29,6 +29,7 @@ qrsh -q medium_amd -l h_rt=1:00:00
 ```
 - Cargar intel OneApi
 ```bash
+module load gcc-6.3.0
 source /share/apps/intelOneApi/pilusoSetvars.sh
 ```
 - Compilación de AENET y creación de librería AENET
