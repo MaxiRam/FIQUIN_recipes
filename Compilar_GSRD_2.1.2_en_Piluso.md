@@ -13,11 +13,7 @@ git clone https://github.com/atomisticnet/aenet.git
 ```
 
 - Obtener el código de GSRD y ponerlo en la carpeta $HOME/Software (para tener la última version pedir a Fabio o a Maxi).
-- Definir unas variables para que sea más sintético el procedimiento
-```bash
-export AENET_ROOT=$HOME/Software/aenet
-export GSRD_ROOT=$HOME/Software/gsrd-2.1.2
-```
+
 
 ## 2- Compilacion usando Intel OneApi
 
@@ -27,6 +23,12 @@ En Piluso la suite Intel OneApi funciona sólo en algunos nodos, precisamente en
 ```bash
 qrsh -q medium_amd -l h_rt=1:00:00
 ```
+- Definir unas variables para que sea más sintético el procedimiento
+```bash
+export AENET_ROOT=$HOME/Software/aenet
+export GSRD_ROOT=$HOME/Software/gsrd-2.1.2
+```
+
 - Cargar intel OneApi
 ```bash
 module load gcc-6.3.0
