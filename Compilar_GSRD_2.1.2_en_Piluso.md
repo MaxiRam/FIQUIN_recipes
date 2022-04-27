@@ -50,7 +50,7 @@ Ahora en la carpeta `$AENET_ROOT/src` tienen que existir los archivos `libaenet.
 Vamos a mover esos archivos para ponerlos en lugares donde no van a ser sobreescritos si hay que volver a compilar:
 ```bash
 mkdir $HOME/bin
-mv AENET_ROOT/bin/* $HOME/bin
+mv $AENET_ROOT/bin/* $HOME/bin
 mkdir $HOME/lib
 mv $AENET_ROOT/lib/liblbfgsb.so $HOME/lib/liblbfgsb_intel.so
 mv $AENET_ROOT/src/libaenet.so $HOME/lib/libaenet_intel.so
