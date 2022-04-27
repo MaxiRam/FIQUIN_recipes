@@ -1,9 +1,9 @@
-######################################################################################
+####################################################################
 #compiler
 FCC = mpiifort
 FFLAGS =  -O3 -mkl=sequential
 
-######################################################################################
+####################################################################
 ## directories defs
 ##current directory
 BASE = $(CURDIR)
@@ -14,37 +14,38 @@ TARGET = gsrd.x
 EXEC = $(BASE)/$(TARGET)
 OBJD = $(BASE)/obj
 SRCD = $(BASE)/src
-LIBS_AENET=$(HOME)/lib
+LIBS_AENET = $(HOME)/lib
+INCS = $(LIBS_AENET)/include_intel
 MYLIBS=$(BASE)/extlib
 
 VPATH = $(OBJD):$(SRCD):$(SRCD)/inicondlib:$(MYLIBS):$(MYLIBS)/linalg
 
 LIB = -L$(LIBS_AENET) -laenet_intel -llbfgsb_intel
 
-######################################################################################
+####################################################################
 # Main and functions
 SRC_MAIN = $(SRCD)/gsrd.f90
 SRC = $(SRC_MAIN)
 
+####################################################################
 #modules
 SRCMOD = $(addprefix $(SRCD)/, commonvars.f90 )
 
 #routines
-SRC += $(addprefix $(SRCD)/, readwrite.f90 pes_aenet.f90 potfuncgrad.f90 energy$
+SRC += $(addprefix $(SRCD)/, readwrite.f90 pes_aenet.f90 potfuncgrad.f90 energy_vdw.f90 energy_longrangeZ_0.f90 energy_longrangeZ_1.f90  eqintegration.f90 make_slabmotion.f90 sysinterface.f90 optimization.f90 init_pesNN.f90 m33inv.f90)
 #initial cond sampling
-SRC += $(addprefix $(SRCD)/inicondlib/, nmodean.f90 nmodesamp.f90 epotvalue.f90$
+SRC += $(addprefix $(SRCD)/inicondlib/, nmodean.f90 nmodesamp.f90 epotvalue.f90 printres.f90 molinicond.f90  angmomfix.f90 iniorient_euler.f90 )
 ################# to compile version with pure normal mode
-#SRC += $(addprefix $(SRCD)/inicondlib/, nmodean_mu.f90 nmodesamp.f90 epotvalue$
-
-########
+#SRC += $(addprefix $(SRCD)/inicondlib/, nmodean_mu.f90 nmodesamp.f90 epotvalue.f90 printres.f90 molinicond_mu.f90  angmomfix.f90 iniorient_euler_mu.f90 FCC111_convert.f90)
+####################################################################
 #common routines
 SRC += $(addprefix $(MYLIBS)/, checkfile.f90 rand_normal.f90 )
 # linear algebra routines
-SRC += $(addprefix $(MYLIBS)/linealalg/,coordchange.f90 crossprod.f90  printmat$
+SRC += $(addprefix $(MYLIBS)/linealalg/,coordchange.f90 crossprod.f90  printmatrix.f90  solveigen.f90 invmatgen.f90 distance.f90 )
 #
 SRCF77 = $(addprefix $(MYLIBS)/, ran0.f gasdev.f ran1.f)
 
-######################################################################################
+####################################################################
 ##objects to build
 f90OBJS=$(notdir $(SRC:.f90=.o))
 
@@ -52,10 +53,12 @@ f77OBJS=$(notdir $(SRCF77:.f=.o))
 
 MODOBJS=$(notdir $(SRCMOD:.f90=.mod))
 
-######################################################################################
-all:    $(MODOBJS)	$(f90OBJS)	$(f77OBJS)
+
+####################################################################
+
+all:    $(MODOBJS)      $(f90OBJS)      $(f77OBJS)
         @echo building executable
-        cd $(OBJD); $(FCC) $(MODOBJS) $(f90OBJS) $(f77OBJS) $(FFLAGS) -o $(EXEC$
+        cd $(OBJD); $(FCC) $(MODOBJS) $(f90OBJS) $(f77OBJS) $(FFLAGS) -o $(EXEC) $(OBJS) $(LIB)
 
 $(MODOBJS):     %.mod : %.f90
         @echo building modules
@@ -63,14 +66,14 @@ $(MODOBJS):     %.mod : %.f90
 
 $(f90OBJS):     %.o : %.f90
         @echo building $*.o
-        cd $(OBJD); $(FCC) -I$(SRC_AENET) -c $(FFLAGS) $< -o $@
+        cd $(OBJD); $(FCC) -I$(INCS) -c $(FFLAGS) $< -o $@
 
 $(f77OBJS):     %.o : %.f
         @echo building $*.o
         cd $(OBJD); $(FCC) -c $(FFLAGS) $< -o $@
 
 test:
-     	@echo "test"
+        @echo "test"
         @echo $(SRC)
         @echo "test"
         @echo $(MODOBJS)
@@ -78,10 +81,10 @@ test:
         @echo "hola $< -o $@"
 
 sync:
-     	  rsync -avz --delete --progress -u $(BASE)/Makefile  piluso:~/GSRD_codes$
-        rsync -avz --delete --progress -u --exclude=".*"  $(BASE)/src/  piluso:$
-        rsync -avz --delete --progress -u --exclude=".*"  $(BASE)/doc/  piluso:$
+        rsync -avz --delete --progress -u $(BASE)/Makefile  piluso:~/GSRD_codes/GSRD/Makefile
+        rsync -avz --delete --progress -u --exclude=".*"  $(BASE)/src/  piluso:~/GSRD_codes/GSRD/src/
+        rsync -avz --delete --progress -u --exclude=".*"  $(BASE)/doc/  piluso:~/GSRD_codes/GSRD/doc/
 
 clean:
-      	rm -f $(OBJD)/*.o $(OBJD)/*.mod gsrd.x
+        rm -f $(OBJD)/*.o $(OBJD)/*.mod gsrd.x
 
