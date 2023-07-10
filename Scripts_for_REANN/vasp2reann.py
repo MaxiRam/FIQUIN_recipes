@@ -3,6 +3,9 @@ from shutil import rmtree
 
 ###################################################################################################
 def write_reann(atoms, filename, index):
+    ''' This function gets the information in an ASE atoms  object and writes it in the configuration
+        file in the format required by REANN
+    '''
     line1 = 'point = \t{}'.format(index)
 
     cell = '\n'.join([''.join(['{:14}'.format(item) for item in row]) for row in atoms.cell])
@@ -27,13 +30,13 @@ def write_reann(atoms, filename, index):
 ###################################################################################################
 parser=argparse.ArgumentParser(description='''This script finds all the OUTCAR files contained
                                               in tgz, and writes the energy and configuration
-                                   into a configs.in file suitable for GSRD fitting''',
+                                              into a configuration file suitable for REANN fitting''',
                         allow_abbrev=True)
 
 #Set the arguments we want to implement
 parser.add_argument("--dir", help="base directory for the resursive search of VASP output files (default: current directory")
-parser.add_argument("--output", help="name for the output file (default: config.out)")
-parser.add_argument("--existing_confs", help="number of existing conf in current configuation file  (default: 0")
+parser.add_argument("--output", help="name for the output file (default: configuration)")
+parser.add_argument("--existing_confs", help="number of existing conf in current configuation file  (default: 1")
 
 
 #Apply the arguments so they can be used
