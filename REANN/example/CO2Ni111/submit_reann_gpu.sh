@@ -14,7 +14,7 @@ conda_env=reann
 export OMP_NUM_THREADS=1
 
 #Number of processes per node to launch
-NPROC_PER_NODE=1
+NUM_GPUS=var=$(echo $SLURM_STEP_GPUS | awk -F',' '{print NF}')
 
 MASTER=`/bin/hostname -s`
 
@@ -23,7 +23,7 @@ MASTER=`/bin/hostname -s`
 COMMAND="/home/mramos.ifir/tools/REANN/reann/run/train.py"
 source $HOME/miniconda3/etc/profile.d/conda.sh
 conda activate $conda_env 
-python3 -m torch.distributed.run --nproc_per_node=$SLURM_NPROCS --max_restarts=0 --nnodes=1 $COMMAND > out
+python3 -m torch.distributed.run --nproc_per_node=$NUM_GPUS --max_restarts=0 --nnodes=$SLURM_NNODES $COMMAND > out
 
 conda deactivate
 
