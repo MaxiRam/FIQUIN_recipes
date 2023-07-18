@@ -14,7 +14,7 @@ conda_env=reann
 export OMP_NUM_THREADS=1
 
 #Number of processes per node to launch
-NUM_GPUS=var=$(echo $SLURM_STEP_GPUS | awk -F',' '{print NF}')
+NUM_GPUS=$(echo $SLURM_STEP_GPUS | awk -F',' '{print NF}')
 
 MASTER=`/bin/hostname -s`
 
